@@ -19,6 +19,10 @@ sentences = ["there is a shortage of capital, and we need extra financing",
 results = nlp(sentences)
 print(results)
 
+def finbert_model_results(sentence):
+    return nlp(sentence)
+
+
 # TODO Compute performance metrics & compare with logistical regression
 # Accuracy: The fraction of times the model makes a correct prediction as compared to the total predictions it makes.
 # Precision: The percent of true positives identified given all positive cases.
