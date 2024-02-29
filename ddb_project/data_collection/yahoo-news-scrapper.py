@@ -9,7 +9,7 @@ import pandas as pd
 def scrape_news_headlines():
     # Set up Selenium WebDriver with Chrome:
     options = Options()
-    # options.add_argument("--headless=new")
+    options.add_argument("--headless=new") #comment this is you wish to see the chrome window...
     driver = webdriver.Chrome(options=options)
     url = 'https://finance.yahoo.com/quote/tsla/news'
     driver.get(url)
