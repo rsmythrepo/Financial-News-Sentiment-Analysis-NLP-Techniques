@@ -6,11 +6,9 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 
-''' pytorch '''
+''' Pytorch model - Logistic Regression '''
 
 # Assuming you have already loaded and preprocessed your data into X (features) and y (labels)
 def get_data():
@@ -74,7 +72,7 @@ if __name__ == '__main__':
     optimizer = optim.SGD(model.parameters(), lr=0.01)
 
     # Training loop
-    num_epochs = 600
+    num_epochs = 50
     batch_size = 64
 
     for epoch in range(num_epochs):

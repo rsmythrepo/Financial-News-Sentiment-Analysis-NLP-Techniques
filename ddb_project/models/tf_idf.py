@@ -6,17 +6,14 @@ string.punctuation
 nlp = spacy.load("en_core_web_sm")
 from spacy.lang.en.stop_words import STOP_WORDS
 stop_words = spacy.lang.en.stop_words.STOP_WORDS
-
 np.random.seed(42)
 from sklearn.feature_extraction.text import TfidfVectorizer
+import pickle
 
 
 '''Task 2.1:
-2.1 Let´s start with simple baseline (at your own choice).
-For example, build a logistic regression model based on pre-trained word embeddings or TF-IDF vectors
-of the financial news corpus **
-i.e.Build a baseline model with Financial Phrasebank dataset.
-What are the limitations of these baseline models?
+Creating a Tokenizer and Vectorizer 
+Saving the Vectorizer
 '''
 
 def get_data():
@@ -33,15 +30,6 @@ def spacy_tokenizer(sentence):
     mytokens = [ word for word in mytokens if word not in stop_words and word not in punctuations ]
     return mytokens
 
-def get_vectorized_dataframe(df):
-    vectorizer = TfidfVectorizer(tokenizer=spacy_tokenizer)
-    count_matrix_tf = vectorizer.fit_transform(df['docs'].to_list())
-    count_array_tf = count_matrix_tf.toarray()
-    df_vec = pd.DataFrame(data=count_array_tf, columns=vectorizer.get_feature_names_out())
-    return df_vec
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
     # Get data
@@ -53,6 +41,11 @@ if __name__ == '__main__':
     tf_idf = tfvectorizer.fit_transform(df1['entities'].to_list())
     tf_idf = tf_idf.toarray()
 
+    # Save the vectorizer
+    with open('vectorizer.pk', 'wb') as fin:
+        pickle.dump(tfvectorizer, fin)
+
+    # Save the vectorized corpus to a file for observing the output
     df_vec = pd.DataFrame(data=tf_idf, columns=tfvectorizer.get_feature_names_out())
     df_vec['labels'] = df1['label']
     df_vec.to_csv("../../data/processed/financial_phrasebank/vectorized_entities.csv")

@@ -11,22 +11,12 @@ tokenizer = BertTokenizer.from_pretrained('ProsusAI/finbert')
 
 nlp = pipeline("sentiment-analysis", model=finbert, tokenizer=tokenizer)
 
-sentences = ["there is a shortage of capital, and we need extra financing",
-             "growth is strong and we have plenty of liquidity",
-             "there are doubts about our finances",
-             "profits are flat"]
-
-results = nlp(sentences)
-print(results)
-
 def finbert_model_results(sentence):
     return nlp(sentence)
 
 
-# TODO Compute performance metrics & compare with logistical regression
-# Accuracy: The fraction of times the model makes a correct prediction as compared to the total predictions it makes.
-# Precision: The percent of true positives identified given all positive cases.
-# & Recall: The percent of true positives versus combined true and false positives.
+# TODO Compute performance metrics
+
 
 
 

@@ -7,15 +7,12 @@ nlp = spacy.load("en_core_web_sm")
 from spacy.lang.en.stop_words import STOP_WORDS
 stop_words = spacy.lang.en.stop_words.STOP_WORDS
 
-np.random.seed(42)
-from sklearn.feature_extraction.text import TfidfVectorizer
-
-np.random.seed(42)
-
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, recall_score, precision_score
+import pickle
 
+'''sklearn model - Logistic Regression'''
 
 '''Task 2.1:
 2.1 Let´s start with simple baseline (at your own choice).
@@ -23,16 +20,6 @@ For example, build a logistic regression model based on pre-trained word embeddi
 of the financial news corpus **
 i.e.Build a baseline model with Financial Phrasebank dataset.
 What are the limitations of these baseline models?
-'''
-
-'''Class Notes: 
-White box solution to show the probabilities of the testing set
-'40% likely that you have cancer'
-
-- augment dataset (sample minority)
-- re-weight the loss function 
-- ensemble methods 
-- conformal prediction (new, advanced)
 '''
 
 def get_data():
@@ -47,13 +34,6 @@ def spacy_tokenizer(sentence):
     mytokens = [ word.lemma_ for word in mytokens ]
     mytokens = [ word for word in mytokens if word not in stop_words and word not in punctuations ]
     return mytokens
-
-def get_vectorized_dataframe(df):
-    vectorizer = TfidfVectorizer(tokenizer=spacy_tokenizer)
-    count_matrix_tf = vectorizer.fit_transform(df['docs'].to_list())
-    count_array_tf = count_matrix_tf.toarray()
-    df_vec = pd.DataFrame(data=count_array_tf, columns=vectorizer.get_feature_names_out())
-    return df_vec
 
 if __name__ == '__main__':
 
@@ -70,28 +50,49 @@ if __name__ == '__main__':
     # Train Test Split
     Xtrain, Xtest, ytrain, ytest = train_test_split(X_fin, Y_fin, random_state=1)
 
-    # Fit to the Logistic Regression model
-    model = LogisticRegression().fit(Xtrain, ytrain)
+    # Training the model
+    model = LogisticRegression(verbose=True)
+    model.fit(Xtrain, ytrain)
+
+    # Save the model with pickle
+    pickle_out = open("model.pkl", "wb")
+    pickle.dump(model, pickle_out)
+    pickle_out.close()
 
     # Predict on new data
-    y_predictions = model.predict_proba(Xtest)
+    test_predictions = model.predict_proba(Xtest[:5])
     print('Predictions')
-    print(y_predictions)
+    print(test_predictions)
 
-    # TODO output probabilities of input
     # Print probabilities for each class - Test
     class_labels = model.classes_
-    for i, prob in enumerate(y_predictions):
-        print("Sentence:", Xtest.iloc[i])
+    for i, prob in enumerate(test_predictions):
+        words = []
+        for column in Xtest.columns:
+            if Xtest.iloc[i][column] > 0.0:
+                words.append(column)
+        sentence = " ".join(words)
+        print("Sentence:",sentence)
         print("Predicted probabilities:")
-        for j, label in enumerate(class_labels):
+        for j, labelled in enumerate(class_labels):
+            if labelled == 0.0:
+                label = 'negative'
+            elif labelled == 1.0:
+                label = 'neutral'
+            else:
+                label = 'positive'
             print(f"{label}: {prob[j]}")
         print()
 
     # Check accuracy score - 82%
-    print('Accuracy Score')
-    accuracy = accuracy_score(ytest, model.predict(Xtest))
-    print("Accuracy:", accuracy)
+    print(confusion_matrix(ytest, model.predict(Xtest)))
+    print(classification_report(ytest, model.predict(Xtest)))
+    print("Accuracy:", accuracy_score(ytest, model.predict(Xtest)))
+    print("Recall Score:", recall_score(ytest, model.predict(Xtest), average='macro'))
+    print("Precision Score:", precision_score(ytest, model.predict(Xtest), average='macro'))
+
+
+
 
 
 
