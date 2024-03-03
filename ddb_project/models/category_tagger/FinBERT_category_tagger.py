@@ -4,7 +4,7 @@ from transformers import pipeline
 # Load the category tagger model
 pipe = pipeline("text-classification", 
                 model="nickmuchi/finbert-tone-finetuned-finance-topic-classification", 
-                token='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')
+                token='my_token')
 
 # Define the Streamlit app
 def main():
