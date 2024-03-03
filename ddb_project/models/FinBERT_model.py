@@ -15,7 +15,7 @@ def get_data():
     df_balanced = pd.read_csv("../../data/processed/financial_phrasebank/sentences_allagree_processed_ver1.2.csv", index_col=0)
     df_balanced = df_balanced.dropna()
     df_balanced = df_balanced.reset_index()
-    df_unbalanced = pd.read_csv("../../data/processed/financial_phrasebank/sentences_allagree_processed_ver2_balanced", index_col=0)
+    df_unbalanced = pd.read_csv("../../data/processed/financial_phrasebank/sentences_allagree_processed_ver2_balanced.csv", index_col=0)
     df_unbalanced = df_unbalanced.dropna()
     df_unbalanced = df_unbalanced.reset_index()
     return df_balanced, df_unbalanced
@@ -31,8 +31,8 @@ finbert = BertForSequenceClassification.from_pretrained('ProsusAI/finbert', num_
 tokenizer = BertTokenizer.from_pretrained('ProsusAI/finbert')
 nlp = pipeline("sentiment-analysis", model=finbert, tokenizer=tokenizer)
 
-# def finbert_model_results(sentence):
-#     return nlp(sentence)
+ def finbert_model_results(sentence):
+     return nlp(sentence)
 
 def finbert_model_results_2(sentences):
     # Initialize lists to store predicted labels
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     predicted_labels_B = finbert_model_results_2(X_fin_B)
 
     # Generate classification report
-    classification_rep_B = classification_report(Y_fin_B, predicted_label_B)
+    classification_rep_B = classification_report(Y_fin_B, predicted_labels_B)
 
     # Print the classification report
     print(classification_rep_B)
