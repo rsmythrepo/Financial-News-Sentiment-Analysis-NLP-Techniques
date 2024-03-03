@@ -2,14 +2,17 @@ import numpy as np
 import pandas as pd
 import spacy
 import string
+
 string.punctuation
 nlp = spacy.load("en_core_web_sm")
 from spacy.lang.en.stop_words import STOP_WORDS
-stop_words = spacy.lang.en.stop_words.STOP_WORDS
 
+stop_words = spacy.lang.en.stop_words.STOP_WORDS
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, recall_score, precision_score
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, recall_score, precision_score, \
+    roc_curve, roc_auc_score
 import pickle
 
 '''sklearn model - Logistic Regression'''
@@ -22,18 +25,21 @@ i.e.Build a baseline model with Financial Phrasebank dataset.
 What are the limitations of these baseline models?
 '''
 
+
 def get_data():
     df = pd.read_csv("../../data/processed/financial_phrasebank/vectorized_entities.csv", index_col=0)
     return df
+
 
 def spacy_tokenizer(sentence):
     punctuations = string.punctuation
     nlp = spacy.load('en_core_web_sm')
     stop_words = spacy.lang.en.stop_words.STOP_WORDS
     mytokens = nlp(sentence)
-    mytokens = [ word.lemma_ for word in mytokens ]
-    mytokens = [ word for word in mytokens if word not in stop_words and word not in punctuations ]
+    mytokens = [word.lemma_ for word in mytokens]
+    mytokens = [word for word in mytokens if word not in stop_words and word not in punctuations]
     return mytokens
+
 
 if __name__ == '__main__':
 
@@ -72,7 +78,7 @@ if __name__ == '__main__':
             if Xtest.iloc[i][column] > 0.0:
                 words.append(column)
         sentence = " ".join(words)
-        print("Sentence:",sentence)
+        print("Sentence:", sentence)
         print("Predicted probabilities:")
         for j, labelled in enumerate(class_labels):
             if labelled == 0.0:
@@ -90,19 +96,4 @@ if __name__ == '__main__':
     print("Accuracy:", accuracy_score(ytest, model.predict(Xtest)))
     print("Recall Score:", recall_score(ytest, model.predict(Xtest), average='macro'))
     print("Precision Score:", precision_score(ytest, model.predict(Xtest), average='macro'))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

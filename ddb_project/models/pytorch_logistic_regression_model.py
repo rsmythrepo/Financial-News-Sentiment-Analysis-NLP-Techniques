@@ -7,8 +7,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
-
-''' Pytorch model - Logistic Regression '''
+from sklearn.metrics import precision_score, recall_score, f1_score
+import matplotlib.pyplot as plt
 
 # Assuming you have already loaded and preprocessed your data into X (features) and y (labels)
 def get_data():
@@ -50,7 +50,6 @@ if __name__ == '__main__':
     y_train_tensor = torch.tensor(y_train.values, dtype=torch.long)
     y_test_tensor = torch.tensor(y_test.values, dtype=torch.long)
 
-
     # Define logistic regression model
     class LogisticRegression(nn.Module):
         def __init__(self, input_size, output_size):
@@ -60,7 +59,6 @@ if __name__ == '__main__':
         def forward(self, x):
             out = self.linear(x)
             return out
-
 
     # Initialize model
     input_size = X_train.shape[1]
@@ -75,7 +73,11 @@ if __name__ == '__main__':
     num_epochs = 50
     batch_size = 64
 
+    train_losses = []
+    val_losses = []
+
     for epoch in range(num_epochs):
+        epoch_train_loss = 0.0
         for i in range(0, len(X_train_tensor), batch_size):
             inputs = X_train_tensor[i:i + batch_size]
             labels = y_train_tensor[i:i + batch_size]
@@ -89,11 +91,38 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
 
-        print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}')
+            epoch_train_loss += loss.item() * inputs.size(0)
+
+        # Calculate average training loss for the epoch
+        train_loss = epoch_train_loss / len(X_train_tensor)
+        train_losses.append(train_loss)
+
+        # Evaluate on validation set
+        with torch.no_grad():
+            outputs = model(X_test_tensor)
+            val_loss = criterion(outputs, y_test_tensor)
+            val_losses.append(val_loss.item())
+
+        print(f'Epoch [{epoch + 1}/{num_epochs}], Train Loss: {train_loss:.4f}, Val Loss: {val_loss.item():.4f}')
+
+    # Plotting the training and validation loss curves
+    plt.plot(range(1, num_epochs + 1), train_losses, label='Training Loss')
+    plt.plot(range(1, num_epochs + 1), val_losses, label='Validation Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Loss Curves')
+    plt.legend()
+    plt.show()
 
     # Evaluation
     with torch.no_grad():
         outputs = model(X_test_tensor)
         _, predicted = torch.max(outputs, 1)
         accuracy = (predicted == y_test_tensor).sum().item() / len(y_test_tensor)
+        precision = precision_score(y_test_tensor, predicted, average='macro')
+        recall = recall_score(y_test_tensor, predicted, average='macro')
+        f1 = f1_score(y_test_tensor, predicted, average='macro')
         print(f'Accuracy: {accuracy:.4f}')
+        print(f'Precision: {precision:.4f}')
+        print(f'Recall: {recall:.4f}')
+        print(f'F1 Score: {f1:.4f}')
