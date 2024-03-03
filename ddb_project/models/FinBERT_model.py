@@ -31,8 +31,8 @@ finbert = BertForSequenceClassification.from_pretrained('ProsusAI/finbert', num_
 tokenizer = BertTokenizer.from_pretrained('ProsusAI/finbert')
 nlp = pipeline("sentiment-analysis", model=finbert, tokenizer=tokenizer)
 
- def finbert_model_results(sentence):
-     return nlp(sentence)
+def finbert_model_results(sentence):
+    return nlp(sentence)
 
 def finbert_model_results_2(sentences):
     # Initialize lists to store predicted labels
