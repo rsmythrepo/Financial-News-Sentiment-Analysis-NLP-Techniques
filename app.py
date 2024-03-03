@@ -53,9 +53,9 @@ def main_content():
         if scrape_button:
             time.sleep(5)
             st.success(f"Scraping done for: {stock_name} (Note: Displaying First 5 news scrapped)")
-            st.write("Tesla Stock Is Rising. Its EV Rivals Gain After Updates")
+            st.write("Tesla (TSLA) Declined as its Core Automotive Segment Remained Under Pressure")
             st.write("Musk said Tesla cars would rise in value but the opposite happened")
-            st.write("Tesla Picked Up Some Share From BYD In China. The Stock Is Falling")
+            st.write("Tesla’s Roadster Is a Waste of Elon Musk’s Time and Money—and Not What the Stock Needs")
             st.write("Tesla raises prices of some Model Y vehicles in US")
             st.write("Tesla Stock Is Falling Despite Good News From the Economy, Ford, and Biden")
 
