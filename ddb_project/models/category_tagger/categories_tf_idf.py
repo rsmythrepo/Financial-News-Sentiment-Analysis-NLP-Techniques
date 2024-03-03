@@ -11,13 +11,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
 
 
-'''Task 2.1:
-Creating a Tokenizer and Vectorizer 
-Saving the Vectorizer
+'''Task 3.1:
+Creating a Tokenizer and Vectorizer for category tagger. 
+Saving the Vectorizer:
 '''
 
 def get_data():
-    df = pd.read_csv("../../data/processed/financial_phrasebank/sentences_allagree_processed_ver1.2.csv")
+    df = pd.read_csv("/Users/carlosvarela/Desktop/Masters/BTS/big_data_ai/data_driven_business/assignment_4_financial_sa/Financial-News-Sentiment-Analysis-NLP-Techniques/data/processed/twitter_financial_news_topics/financial_news_topic_processed.csv")
     return df
 
 # Creating our tokenizer function
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     # Save the vectorized corpus to a file for observing the output
     df_vec = pd.DataFrame(data=tf_idf, columns=tfvectorizer.get_feature_names_out())
     df_vec['labels'] = df1['label']
-    df_vec.to_csv("../../data/processed/financial_phrasebank/vectorized_entities.csv")
+    df_vec.to_csv("/Users/carlosvarela/Desktop/Masters/BTS/big_data_ai/data_driven_business/assignment_4_financial_sa/Financial-News-Sentiment-Analysis-NLP-Techniques/categories_vectorized_entities.csv")
 
 
 
